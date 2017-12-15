@@ -1,0 +1,370 @@
+using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+//using System.Runtime.Serialization.Formatters.Soap;
+//using System.Runtime.Serialization.Formatters.Json;
+using System.Runtime.Serialization;
+//using System.Runtime.Serialization.Formatters.XML;
+using System.Collections.Generic;
+//using System.Xml.Linq;
+
+// Сериализация представляет процесс преобразования какого-либо объекта 
+//в поток байтов. После преобразования мы можем этот поток байтов или 
+//записать на диск или сохранить его временно в памяти. А при 
+//необходимости можно выполнить обратный процесс - десериализацию, 
+//то есть получить из потока байтов ранее сохраненный объект.
+
+
+namespace Serialization
+{
+
+    //Бинарная сериализация
+    //------------------------------------------------------------------------
+    [Serializable]
+    class Person
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+
+        public Person(string name, int age)
+        {
+            Name = name;
+            Age = age;
+        }
+    }
+
+
+
+
+	//    //soap сериализация
+	//------------------------------------------------------------------------
+	//    [Serializable]
+	//    class Person2
+	//    {
+	//        public string Name2 { get; set; }
+	//        public int Age2 { get; set; }
+
+	//        public Person2(string name2, int age2)
+	//        {
+	//            Name2 = name2;
+	//            Age2 = age2;
+	//        }
+
+	//    }
+	//}
+
+
+
+
+
+	//json сериализация
+	//------------------------------------------------------------------------
+
+	//[DataContract]
+	//public class Person
+	//{
+	//[DataMember]
+	//public string Name { get; set; }
+	//[DataMember]
+	//public int Age { get; set; }
+
+	//public Person(string name, int year)
+	//{
+	//    Name = name;
+	//    Age = year;
+	//}
+
+
+
+	//xml сериализация
+	//------------------------------------------------------------------------
+
+	// класс и его члены объявлены как public
+	//[Serializable]
+	//public class Person
+	//{
+	//public string Name { get; set; }
+	//public int Age { get; set; }
+
+	// стандартный конструктор без параметров
+	//public Person()
+	//{ }
+
+	//public Person(string name, int age)
+	//{
+	//	Name = name;
+	//	Age = age;
+	//}
+	//}
+
+
+	//сериализация массива
+	//------------------------------------------------------------------------
+
+
+	//public class ColorDeleteOutput
+	//{
+	//    public List<ResponseMessage> Response { get; set; }
+	//}
+
+	//public class ResponseMessage
+	//{
+	//    public string StyleNumber { get; set; }
+	//    public string ColorLongDesc { get; set; }
+	//    public string DistroDesc { get; set; }
+	//    public string Status { get; set; }
+
+	//}
+
+
+	class Program
+    {
+
+        public class ColorDeleteOutput
+        {
+            public List<ResponseMessage> Response { get; set; }
+        }
+
+        public class ResponseMessage
+        {
+            public string StyleNumber { get; set; }
+            public string ColorLongDesc { get; set; }
+            public string DistroDesc { get; set; }
+            public string Status { get; set; }
+
+            static void Main(string[] args)
+            {
+
+
+                // Бинарная сериализация
+                //------------------------------------------------------------------------
+                // объект для сериализации
+                Person person = new Person("Tom", 29);
+                Console.WriteLine("Объект создан");
+
+                // создаем объект BinaryFormatter
+                BinaryFormatter formatter = new BinaryFormatter();
+                // получаем поток, куда будем записывать сериализованный объект
+                using (FileStream fs = new FileStream("people.dat", FileMode.OpenOrCreate))
+                {
+                    formatter.Serialize(fs, person);
+
+                    Console.WriteLine("Объект сериализован");
+                }
+
+                // десериализация из файла people.dat
+                using (FileStream fs = new FileStream("people.dat", FileMode.OpenOrCreate))
+                {
+                    Person newPerson = (Person)formatter.Deserialize(fs);
+
+                    Console.WriteLine("Объект десериализован");
+                    Console.WriteLine("Имя: {0} --- Возраст: {1}", newPerson.Name, newPerson.Age);
+                }
+
+
+
+				//soap сериализация
+				//------------------------------------------------------------------------
+				//Person2 person = new Person2("Tom", 29);
+				//Person2 person2 = new Person2("Bill", 25);
+				//Person2[] people = new Person2[] { person, person2 };
+
+				// создаем объект SoapFormatter
+				//SoapFormatter formatter = new SoapFormatter();
+				// получаем поток, куда будем записывать сериализованный объект
+				//using (FileStream fs = new FileStream("people.soap", FileMode.OpenOrCreate))
+				//{
+				//	formatter.Serialize(fs, people);
+
+				//	Console.WriteLine("Объект сериализован");
+				//}
+
+				// десериализация
+				//using (FileStream fs = new FileStream("people.soap", FileMode.OpenOrCreate))
+				//{
+				//	Person2[] newPeople = (Person2[])formatter.Deserialize(fs);
+
+				//	Console.WriteLine("Объект десериализован");
+				//	foreach (Person2 p in newPeople)
+				//	{
+				//		Console.WriteLine("Имя: {0} --- Возраст: {1}", p.Name2, p.Age2);
+				//	}
+				//}
+
+
+
+
+
+				//json сериализация
+				//------------------------------------------------------------------------
+
+				// объект для сериализации
+				//Person person1 = new Person("Tom", 29);
+				//Person person2 = new Person("Bill", 25);
+				//Person[] people = new Person[] { person1, person2 };
+
+				//DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(Person[]));
+
+				//using (FileStream fs = new FileStream("people.json", FileMode.OpenOrCreate))
+				//{
+				//	jsonFormatter.WriteObject(fs, people);
+				//}
+
+				//using (FileStream fs = new FileStream("people.json", FileMode.OpenOrCreate))
+				//{
+				//	Person[] newpeople = (Person[])jsonFormatter.ReadObject(fs);
+
+				//	foreach (Person p in newpeople)
+				//	{
+				//		Console.WriteLine("Имя: {0} --- Возраст: {1}", p.Name, p.Age);
+				//	}
+				//}
+
+
+				//xml сериализация
+				//------------------------------------------------------------------------
+
+				// объект для сериализации
+				//Person person = new Person("Tom", 29);
+				//Console.WriteLine("Объект создан");
+
+				// передаем в конструктор тип класса
+				//XmlSerializer formatter = new XmlSerializer(typeof(Person));
+
+				// получаем поток, куда будем записывать сериализованный объект
+				//using (FileStream fs = new FileStream("persons.xml", FileMode.OpenOrCreate))
+				//{
+				//	formatter.Serialize(fs, person);
+
+				//	Console.WriteLine("Объект сериализован");
+				//}
+
+				// десериализация
+				//using (FileStream fs = new FileStream("persons.xml", FileMode.OpenOrCreate))
+				//{
+				//	Person newPerson = (Person)formatter.Deserialize(fs);
+
+				//	Console.WriteLine("Объект десериализован");
+				//	Console.WriteLine("Имя: {0} --- Возраст: {1}", newPerson.Name, newPerson.Age);
+				//}
+
+
+
+				//сериализация массива
+				//------------------------------------------------------------------------
+
+
+				//сериализация массива
+				//List<ResponseMessage> respmsg = new List<ResponseMessage>();
+
+				//respmsg.Add(new ResponseMessage { ColorLongDesc = "BLUE", StyleNumber = "124578", DistroDesc = "MARIO BRACKEN", Status = "SUCCESS" });
+
+				//string sJSONResponse = JsonConvert.SerializeObject(respmsg);
+
+
+
+
+
+
+				//linq to xml
+				//------------------------------------------------------------------------
+
+				//StringBuilder result = new StringBuilder();
+
+				//Load xml
+				//XDocument xdoc = XDocument.Load("data.xml");
+
+				//Run query
+				//var lv1s = from lv1 in xdoc.Descendants("level1")
+				//		   select new
+				//		   {
+				//			   Header = lv1.Attribute("name").Value,
+				//			   Children = lv1.Descendants("level2")
+				//		   };
+
+				//Loop through results
+				//foreach (var lv1 in lv1s)
+				//{
+				//	result.AppendLine(lv1.Header);
+				//	foreach (var lv2 in lv1.Children)
+				//		result.AppendLine("     " + lv2.Attribute("name").Value);
+				//}
+
+
+
+				//Console.WriteLine(result);
+				Console.ReadLine();
+            }
+        }
+    }
+    }
+    
+      -------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------
+data.xml
+
+<root>
+    <level1 name="A">
+        <level2 name="A1" />
+        <level2 name="A2" />
+    </level1>
+    <level1 name="B">
+        <level2 name="B1" />
+        <level2 name="B2" />
+    </level1>
+    <level1 name="C" />
+</root>
+
+
+
+   -------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------
+  -----------
+  union.xsl
+  
+  
+  <?xml version='1.0'?>
+<xsl:stylesheet version="1.0"
+      xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<xsl:template match="root">
+   <xsl:for-each select="x | y/x">
+      <xsl:value-of select="."/>,
+      <xsl:if test="not(position()=last())">,</xsl:if>
+   </xsl:for-each>
+</xsl:template>
+
+</xsl:stylesheet>
+
+
+ -------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------
+  -----------
+  data1.xml
+  
+  
+  <?xml version='1.0'?>
+<?xml-stylesheet type="text/xsl" href="union.xsl"?>
+<root>
+   <x>green</x>
+   <y>
+      <x>blue</x>
+      <x>blue</x>
+   </y>
+   <z>
+      <x>red</x>
+      <x>red</x>
+   </z>
+   <x>green</x>
+</root>
+
